@@ -254,10 +254,25 @@ export default function DmoDashboard({ hospitals, onUpdateHospitals }: DmoDashbo
                   <div className="text-zinc-500 dark:text-zinc-400">Hospital: <span className="text-zinc-900 dark:text-zinc-200 font-bold">{item.hospitalName}</span></div>
                   <div className="text-[11px] text-rose-500 font-mono font-semibold">Safety Reserve Threshold: {item.emergencyLimit} {item.unit}</div>
                 </div>
-                <div className="text-right">
+                <div className="text-right flex flex-col items-end gap-2">
                   <span className="px-3 py-1.5 rounded-xl bg-rose-500/15 text-rose-600 dark:text-rose-400 font-black text-xs border border-rose-500/30 inline-block shadow-sm">
                     Current: {item.currentStock} {item.unit}
                   </span>
+                  <button
+                    onClick={() => {
+                      setSelectedTransfer({
+                        donorPhc: 'PHC_103 Chembur',
+                        deficitPhc: item.hospitalName,
+                        medicine: item.name,
+                        quantity: Math.max(item.emergencyLimit * 2, 50),
+                        distanceKm: 12.4,
+                      });
+                      setRequisitionOpen(true);
+                    }}
+                    className="px-3 py-1 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs transition-all shadow-md shadow-emerald-600/20 active:scale-95 flex items-center gap-1"
+                  >
+                    📋 Generate Requisition
+                  </button>
                 </div>
               </div>
             ))}
@@ -317,12 +332,29 @@ export default function DmoDashboard({ hospitals, onUpdateHospitals }: DmoDashbo
                 </div>
 
                 {csg.status === "Pending Dispatch" && (
-                  <button
-                    onClick={() => handleDispatchConsignment(csg.id)}
-                    className="w-full py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-xs transition-all shadow-md shadow-blue-600/25 active:scale-98 flex items-center justify-center gap-2"
-                  >
-                    <span>Dispatch Emergency Consignment Now 🚀</span>
-                  </button>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => handleDispatchConsignment(csg.id)}
+                      className="flex-1 py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-xs transition-all shadow-md shadow-blue-600/25 active:scale-98 flex items-center justify-center gap-2"
+                    >
+                      <span>Dispatch Consignment 🚀</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        setSelectedTransfer({
+                          donorPhc: 'PHC_103 Chembur',
+                          deficitPhc: csg.hospitalName,
+                          medicine: csg.medicines[0]?.name || 'MED_PARACETAMOL',
+                          quantity: csg.medicines[0]?.quantity || 100,
+                          distanceKm: 14.2,
+                        });
+                        setRequisitionOpen(true);
+                      }}
+                      className="py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs transition-all shadow-md shadow-emerald-600/25 active:scale-98 flex items-center justify-center gap-2"
+                    >
+                      <span>📄 Order Brief</span>
+                    </button>
+                  </div>
                 )}
               </div>
             ))}
@@ -398,7 +430,8 @@ export default function DmoDashboard({ hospitals, onUpdateHospitals }: DmoDashbo
         onClose={() => setIsLogbookModalOpen(false)}
         onAddParsedMedicines={handleAddParsedMedicines}
       />
-       <RequisitionModal
+      {/* Stock Transfer Requisition Order Modal */}
+      <RequisitionModal
         isOpen={requisitionOpen}
         onClose={() => setRequisitionOpen(false)}
         donorPhc={selectedTransfer.donorPhc}
