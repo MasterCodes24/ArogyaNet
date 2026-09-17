@@ -6,6 +6,7 @@ import { Hospital, ConsignmentRequest, INITIAL_CONSIGNMENTS } from "@/data/hospi
 import ArogyaMap from "@/components/ArogyaMap";
 import LogbookScannerModal from "@/components/LogbookScannerModal";
 import { useAuth } from "@/context/AuthContext";
+import RequisitionModal from './RequisitionModal';
 
 interface DmoDashboardProps {
   hospitals: Hospital[];
@@ -13,6 +14,16 @@ interface DmoDashboardProps {
 }
 
 export default function DmoDashboard({ hospitals, onUpdateHospitals }: DmoDashboardProps) {
+
+  const [requisitionOpen, setRequisitionOpen] = useState(false);
+  const [selectedTransfer, setSelectedTransfer] = useState({
+    donorPhc: 'PHC_103 Chembur',
+    deficitPhc: 'PHC_102 Taloja',
+    medicine: 'MED_PARACETAMOL',
+    quantity: 100,
+    distanceKm: 12.4,
+  });
+
   const { user } = useAuth();
 
   const [mapFilter, setMapFilter] = useState<"All" | "Active Sync" | "Predictive Stock" | "Blackout">("All");
@@ -387,6 +398,16 @@ export default function DmoDashboard({ hospitals, onUpdateHospitals }: DmoDashbo
         onClose={() => setIsLogbookModalOpen(false)}
         onAddParsedMedicines={handleAddParsedMedicines}
       />
+       <RequisitionModal
+        isOpen={requisitionOpen}
+        onClose={() => setRequisitionOpen(false)}
+        donorPhc={selectedTransfer.donorPhc}
+        deficitPhc={selectedTransfer.deficitPhc}
+        medicine={selectedTransfer.medicine}
+        quantity={selectedTransfer.quantity}
+        distanceKm={selectedTransfer.distanceKm}
+      />
+
     </div>
   );
 }

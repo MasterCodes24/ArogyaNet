@@ -1,16 +1,18 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState } from "react";
 
-export type UserRole = "general" | "dmo" | null;
+export type UserRole = "general" | "dmo" | "phc_worker" | null;
 
 export interface UserProfile {
   id: string;
   name: string;
-  role: "general" | "dmo";
+  role: "general" | "dmo" | "phc_worker";
   email: string;
-  badgeId?: string; // Specific for DMO (e.g. DMO-PANVEL-01)
+  badgeId?: string; // DMO Badge (e.g. DMO-PANVEL-01) or PHC Worker ID (e.g. PHC-KAMOTHE-04)
   district?: string;
+  phcCenterId?: string;
+  phcCenterName?: string;
 }
 
 interface AuthContextType {
@@ -19,13 +21,13 @@ interface AuthContextType {
   isRoleSelectorOpen: boolean;
   isAuthModalOpen: boolean;
   authMode: "login" | "register";
-  targetRoleForAuth: "general" | "dmo";
+  targetRoleForAuth: "general" | "dmo" | "phc_worker";
   
   selectRole: (role: UserRole) => void;
   openRoleSelector: () => void;
   closeRoleSelector: () => void;
   
-  openAuthModal: (role: "general" | "dmo", mode?: "login" | "register") => void;
+  openAuthModal: (role: "general" | "dmo" | "phc_worker", mode?: "login" | "register") => void;
   closeAuthModal: () => void;
   
   login: (profile: UserProfile) => void;
@@ -40,7 +42,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isRoleSelectorOpen, setIsRoleSelectorOpen] = useState<boolean>(true);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
   const [authMode, setAuthMode] = useState<"login" | "register">("login");
-  const [targetRoleForAuth, setTargetRoleForAuth] = useState<"general" | "dmo">("general");
+  const [targetRoleForAuth, setTargetRoleForAuth] = useState<"general" | "dmo" | "phc_worker">("general");
 
   const selectRole = (selectedRole: UserRole) => {
     setRole(selectedRole);
@@ -57,7 +59,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsRoleSelectorOpen(false);
   };
 
-  const openAuthModal = (targetRole: "general" | "dmo", mode: "login" | "register" = "login") => {
+  const openAuthModal = (targetRole: "general" | "dmo" | "phc_worker", mode: "login" | "register" = "login") => {
     setTargetRoleForAuth(targetRole);
     setAuthMode(mode);
     setIsAuthModalOpen(true);
