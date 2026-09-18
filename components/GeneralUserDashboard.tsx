@@ -194,66 +194,68 @@ export default function GeneralUserDashboard({ hospitals }: GeneralUserDashboard
 
   return (
     <div className="space-y-8 animate-in fade-in duration-300">
-      {/* Hero Banner (No overflow-hidden to allow dropdown popups) */}
-      <div className="relative rounded-3xl shadow-2xl border border-emerald-500/20 bg-zinc-950">
-        <div className="relative min-h-[340px] md:min-h-[380px] w-full rounded-3xl overflow-hidden p-6 md:p-8 flex flex-col justify-between">
+      {/* Hero Banner with Search Bar */}
+      <div className="relative rounded-3xl shadow-2xl border border-emerald-500/20 bg-zinc-950 p-6 md:p-8 flex flex-col justify-between min-h-[340px] md:min-h-[380px]">
+        {/* Isolated Background Image & Gradients with overflow-hidden */}
+        <div className="absolute inset-0 rounded-3xl overflow-hidden pointer-events-none">
           <Image
             src="/images/hospital.jpg"
             alt="Public Healthcare Telemetry & Smart Recommender"
             fill
-            className="object-cover object-center opacity-65 pointer-events-none"
+            className="object-cover object-center opacity-65"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-zinc-950 via-zinc-950/85 to-transparent pointer-events-none" />
-          <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-r from-zinc-950 via-zinc-950/85 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent" />
+        </div>
 
-          {/* Hero Header Text */}
-          <div className="space-y-2 max-w-2xl z-10">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-extrabold border border-emerald-400/30 backdrop-blur-md">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              Maharashtra Healthcare Telemetry & Smart Medicine Finder
-            </div>
-            <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight drop-shadow-md">
-              Find Medicines, ICU Beds & Treatments
-            </h2>
-            <p className="text-xs md:text-sm text-emerald-100/90 font-medium leading-relaxed">
-              Real-time hospital availability across Maharashtra (Mumbai, Navi Mumbai, Raigad, Thane, Pune, Nashik, Sambhajinagar & Nagpur). Search essential drugs & emergency beds.
-            </p>
+        {/* Hero Header Text */}
+        <div className="space-y-2 max-w-2xl z-10 relative">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-extrabold border border-emerald-400/30 backdrop-blur-md">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            Maharashtra Healthcare Telemetry & Smart Medicine Finder
           </div>
+          <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight drop-shadow-md">
+            Find Medicines, ICU Beds & Treatments
+          </h2>
+          <p className="text-xs md:text-sm text-emerald-100/90 font-medium leading-relaxed">
+            Real-time hospital availability across Maharashtra (Mumbai, Navi Mumbai, Raigad, Thane, Pune, Nashik, Sambhajinagar & Nagpur). Search essential drugs & emergency beds.
+          </p>
+        </div>
 
-          {/* Search Bar Container with Unclipped Autocomplete Popup */}
-          <div className="mt-6 z-30" ref={searchContainerRef}>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 relative">
-              <div className="md:col-span-2 relative">
-                <div className="relative">
-                  <input
-                    type="text"
-                    value={searchTerm}
-                    onFocus={() => setIsAutocompleteOpen(true)}
-                    onChange={(e) => {
-                      setSearchTerm(e.target.value);
-                      setIsAutocompleteOpen(true);
+        {/* Search Bar Container with Fully Unclipped Floating Dropdown */}
+        <div className="mt-6 z-40 relative" ref={searchContainerRef}>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div className="md:col-span-2 relative">
+              <div className="relative">
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onFocus={() => setIsAutocompleteOpen(true)}
+                  onChange={(e) => {
+                    setSearchTerm(e.target.value);
+                    setIsAutocompleteOpen(true);
+                  }}
+                  placeholder="Type medicine (ASV, Insulin, Paracetamol) or treatment (ICU, Dialysis)..."
+                  className="w-full px-4 py-3.5 pl-10 rounded-2xl bg-white/20 backdrop-blur-xl border-2 border-emerald-400/50 text-white placeholder-emerald-100/70 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400 font-semibold shadow-2xl"
+                />
+                <span className="absolute left-3.5 top-3.5 text-emerald-300 text-base">🔍</span>
+                {searchTerm && (
+                  <button
+                    onClick={() => {
+                      setSearchTerm("");
+                      setIsAutocompleteOpen(false);
                     }}
-                    placeholder="Type medicine (ASV, Insulin, Paracetamol) or treatment (ICU, Dialysis)..."
-                    className="w-full px-4 py-3.5 pl-10 rounded-2xl bg-white/20 backdrop-blur-xl border-2 border-emerald-400/40 text-white placeholder-emerald-100/70 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400 font-semibold shadow-2xl"
-                  />
-                  <span className="absolute left-3.5 top-3.5 text-emerald-300 text-base">🔍</span>
-                  {searchTerm && (
-                    <button
-                      onClick={() => {
-                        setSearchTerm("");
-                        setIsAutocompleteOpen(false);
-                      }}
-                      className="absolute right-3.5 top-3.5 text-xs bg-white/20 hover:bg-white/30 text-white px-2 py-0.5 rounded-full font-bold transition-colors"
-                    >
-                      Clear
-                    </button>
-                  )}
-                </div>
+                    className="absolute right-3.5 top-3.5 text-xs bg-white/20 hover:bg-white/30 text-white px-2 py-0.5 rounded-full font-bold transition-colors"
+                  >
+                    Clear
+                  </button>
+                )}
+              </div>
 
-                {/* Categorized Autocomplete Dropdown Menu */}
-                {isAutocompleteOpen && (
-                  <div className="absolute top-full left-0 right-0 mt-2 rounded-2xl bg-zinc-900/95 backdrop-blur-2xl border-2 border-emerald-500/50 shadow-2xl z-50 p-3 space-y-3 max-h-[380px] overflow-y-auto divide-y divide-zinc-800 animate-in fade-in slide-in-from-top-2 duration-200">
+              {/* Fully Floating Categorized Autocomplete Dropdown Menu */}
+              {isAutocompleteOpen && (
+                <div className="absolute top-full left-0 right-0 mt-2 rounded-2xl bg-zinc-950 border-2 border-emerald-500 shadow-2xl z-[100] p-3 space-y-3 max-h-[380px] overflow-y-auto divide-y divide-zinc-800 animate-in fade-in slide-in-from-top-2 duration-200">
                     {/* Medicines Category */}
                     {autocompleteSuggestions.medicines.length > 0 && (
                       <div className="pt-1">
@@ -344,7 +346,6 @@ export default function GeneralUserDashboard({ hospitals }: GeneralUserDashboard
             </div>
           </div>
         </div>
-      </div>
 
       {/* Maharashtra Location Switcher: Find Hospitals Anywhere in Maharashtra */}
       <div className="p-6 rounded-3xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl space-y-4">
