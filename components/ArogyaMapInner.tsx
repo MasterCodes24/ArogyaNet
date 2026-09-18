@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import { Hospital } from "@/data/hospitalsData";
 
@@ -53,6 +53,15 @@ interface ArogyaMapInnerProps {
   selectedHospitalId?: string | null;
   onSelectHospital?: (hospital: Hospital) => void;
   statusFilter?: "All" | "Active Sync" | "Predictive Stock" | "Blackout";
+  mapCenter?: [number, number];
+}
+
+function MapController({ center }: { center: [number, number] }) {
+  const map = useMap();
+  React.useEffect(() => {
+    map.flyTo(center, 11, { animate: true, duration: 1.2 });
+  }, [center, map]);
+  return null;
 }
 
 export default function ArogyaMapInner({
@@ -60,8 +69,10 @@ export default function ArogyaMapInner({
   selectedHospitalId,
   onSelectHospital,
   statusFilter = "All",
+  mapCenter,
 }: ArogyaMapInnerProps) {
-  const center: [number, number] = [18.9894, 73.1175];
+  const defaultCenter: [number, number] = [18.9894, 73.1175];
+  const center = mapCenter || defaultCenter;
 
   const filteredHospitals = hospitals.filter(
     (h) => statusFilter === "All" || h.status === statusFilter
@@ -71,10 +82,11 @@ export default function ArogyaMapInner({
     <div className="relative w-full h-[520px] rounded-2xl overflow-hidden shadow-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-900">
       <MapContainer
         center={center}
-        zoom={12}
+        zoom={11}
         scrollWheelZoom={true}
         className="w-full h-full z-0"
       >
+        <MapController center={center} />
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

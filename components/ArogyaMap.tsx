@@ -8,6 +8,7 @@ interface ArogyaMapProps {
   selectedHospitalId?: string | null;
   onSelectHospital?: (hospital: Hospital) => void;
   statusFilter?: "All" | "Active Sync" | "Predictive Stock" | "Blackout";
+  mapCenter?: [number, number];
 }
 
 const ArogyaMapInner = dynamic(() => import("./ArogyaMapInner"), {
