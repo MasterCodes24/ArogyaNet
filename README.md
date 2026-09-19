@@ -36,7 +36,7 @@
 
 ## 🌐 Overview
 
-ArogyaNet is a **public health infrastructure management platform** built for the Maharashtra region. It addresses a critical gap in India's primary healthcare system: the lack of real-time visibility into medicine stock, bed availability, cold-chain status, and inter-facility logistics.
+ArogyaNet is a **public health infrastructure management platform** built for India. It addresses a critical gap in India's primary healthcare system: the lack of real-time visibility into medicine stock, bed availability, cold-chain status, and inter-facility logistics.
 
 The platform operates across **three distinct user roles**, each with a tailored dashboard, providing a unified view of district-level health infrastructure — from government district hospitals down to rural primary health centres (PHCs).
 
@@ -50,7 +50,7 @@ The platform operates across **three distinct user roles**, each with a tailored
 - Filter hospitals by status type; click markers for full facility details
 - Supports 13+ pre-configured Maharashtra location presets and free-text city search
 
-### 🤖 AI-Powered Logbook Scanner *(Gemini 1.5 Flash)*
+### 🤖 AI-Powered Logbook Scanner *(Gemini 3.6 Flash)*
 - Upload a photo of any handwritten or printed medicine logbook
 - Gemini Vision API extracts medicine names, quantities, and batch numbers automatically
 - Parsed results are injected directly into hospital inventory records
@@ -94,12 +94,12 @@ The platform operates across **three distinct user roles**, each with a tailored
 
 | Layer | Technology |
 |---|---|
-| **Framework** | [Next.js 16](https://nextjs.org) (App Router) |
+| **Framework** | [Next.js ](https://nextjs.org) (App Router) |
 | **UI Library** | [React 19](https://react.dev) |
 | **Language** | [TypeScript 5](https://typescriptlang.org) |
 | **Styling** | [Tailwind CSS v4](https://tailwindcss.com) |
 | **Maps** | [Leaflet](https://leafletjs.com) + [React Leaflet v5](https://react-leaflet.js.org) |
-| **AI / Vision** | [Google Gemini 1.5 Flash](https://ai.google.dev) via `@google/genai` |
+| **AI / Vision** | [Google Gemini 3.6 Flash](https://ai.google.dev) via `@google/genai` |
 | **Cloud** | [Google Cloud Run](https://cloud.google.com/run) + [BigQuery](https://cloud.google.com/bigquery) |
 | **Containerisation** | [Docker](https://docker.com) (multi-stage, Node 20 Alpine) |
 
@@ -200,82 +200,7 @@ To obtain a Gemini API key, visit [Google AI Studio](https://aistudio.google.com
 
 ---
 
-## 🐳 Docker Deployment
 
-ArogyaNet includes a production-ready **multi-stage Dockerfile** optimised for [Google Cloud Run](https://cloud.google.com/run).
-
-### Build the image
-
-```bash
-docker build -t arogyanet .
-```
-
-### Run locally
-
-```bash
-docker run -p 8080:8080 \
-  -e GEMINI_API_KEY="your-key" \
-  -e GOOGLE_CLOUD_PROJECT_ID="your-project-id" \
-  arogyanet
-```
-
-### Deploy to Google Cloud Run
-
-```bash
-# Build and push to Artifact Registry
-gcloud builds submit --tag gcr.io/YOUR_PROJECT_ID/arogyanet
-
-# Deploy
-gcloud run deploy arogyanet \
-  --image gcr.io/YOUR_PROJECT_ID/arogyanet \
-  --platform managed \
-  --region asia-south1 \
-  --allow-unauthenticated \
-  --set-env-vars GEMINI_API_KEY=your-key,GOOGLE_CLOUD_PROJECT_ID=your-project-id
-```
-
----
-
-## 📡 API Reference
-
-### `POST /api/parse-logbook`
-
-Accepts a base64-encoded image of a medicine logbook and returns structured inventory data using Gemini Vision AI.
-
-**Request Body:**
-```json
-{
-  "image": "data:image/jpeg;base64,<base64-string>"
-}
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "data": [
-    {
-      "medicine": "Paracetamol 500mg",
-      "quantity": 250,
-      "batchNumber": "BT-2024-0192"
-    },
-    {
-      "medicine": "Amoxicillin 250mg",
-      "quantity": 100,
-      "batchNumber": "N/A"
-    }
-  ]
-}
-```
-
-**Error Response:**
-```json
-{
-  "error": "GEMINI_API_KEY environment variable is not configured."
-}
-```
-
----
 
 ## 🔭 Future Scope
 
